@@ -9,18 +9,25 @@ namespace Labyrinthe
 
     public class Matrice
     {
-        int dimTotY = 0;
-        int dimTotX = 0;
+        int dimTotY;
+        int dimTotX;
+        int dimX;
+        int dimY;
         private int[,] map;
 
-        public Matrice(int dimToY, int dimToX){
-            this.dimTotY = dimToY;
-            this.dimTotX = dimToX;
+        public Matrice(int x, int y)
+        {
+            dimX = x;
+            dimY = y;
+            dimTotX = x * 2 + 3;
+            dimTotY = y * 2 + 3;
             map = new int[dimTotY, dimTotX];
+
             init();
         }
 
-        public int[,] getMap(){
+        public int[,] getMap()
+        {
             return map;
         }
 
@@ -41,6 +48,8 @@ namespace Labyrinthe
                 }
             }
 
+            //Generate de maze (matrix of int but not colors)
+            generateMaze(2, 2);
 
             //Add a default start and a default finish
 
@@ -53,71 +62,97 @@ namespace Labyrinthe
             map[dimTotY - 1, dimTotX - 3] = 1;
         }
 
-        //public void generateMaze(int x, int y)
-        //{
-        //    //Color the cell (explored)
-        //    squares[x][y].setBackground(Color.white);
+        //Verify all 4 directions and return TRUE if none of them are available
+        private bool noOther(int[] dir)
+        {
+            return (dir[0] != 0 && dir[1] != 0 && dir[2] != 0 && dir[3] != 0);
+        }
 
-        //    //Mark as visited
-        //    array[x][y] = 1;
+        public void generateMaze(int x, int y)
+        {
 
-        //    //Directions array
-        //    int[] dir = new int[4];
-        //    dir[0] = array[x + 2][y];
-        //    dir[1] = array[x - 2][y];
-        //    dir[2] = array[x][y + 2];
-        //    dir[3] = array[x][y - 2];
 
-        //    //Check if all directions are unavailable
-        //    if (noOther(dir)) return;
+            //Mark as visited
+            map[x, y] = 1;
 
-        //    //Explore all possible directions
-        //    while (!noOther(dir))
-        //    {
+            //Directions map
+            int[] dir = new int[4];
+            dir[0] = map[x + 2, y];
+            dir[1] = map[x - 2, y];
+            dir[2] = map[x, y + 2];
+            dir[3] = map[x, y - 2];
 
-        //        int newDir = randomize(0, 3);
-        //        while (dir[newDir] != 0)
-        //        {
-        //            newDir = randomize(0, 3);
-        //        }
-        //        if (newDir == 0)
-        //        {
-        //            if (array[x + 2][y] == 0)
-        //            {
-        //                generateMaze(x + 2, y);
-        //                squares[x + 1][y].setBackground(Color.white);
-        //            }
-        //            dir[newDir] = 1;
-        //        }
-        //        else if (newDir == 1)
-        //        {
-        //            if (array[x - 2][y] == 0)
-        //            {
-        //                generateMaze(x - 2, y);
-        //                squares[x - 1][y].setBackground(Color.white);
-        //            }
-        //            dir[newDir] = 1;
-        //        }
-        //        else if (newDir == 2)
-        //        {
-        //            if (array[x][y + 2] == 0)
-        //            {
-        //                generateMaze(x, y + 2);
-        //                squares[x][y + 1].setBackground(Color.white);
-        //            }
-        //            dir[newDir] = 1;
-        //        }
-        //        else if (newDir == 3)
-        //        {
-        //            if (array[x][y - 2] == 0)
-        //            {
-        //                generateMaze(x, y - 2);
-        //                squares[x][y - 1].setBackground(Color.white);
-        //            }
-        //            dir[newDir] = 1;
-        //        }
-        //    }
+            //Check if all directions are unavailable
+            if (noOther(dir)) return;
 
-        //}
+            //Explore all possible directions
+            while (!noOther(dir))
+            {
+
+                int newDir = randomize(0, 3);
+                while (dir[newDir] != 0)
+                {
+                    newDir = randomize(0, 3);
+                }
+                if (newDir == 0)
+                {
+                    if (map[x + 2, y] == 0)
+                    {
+                        generateMaze(x + 2, y);
+                    }
+                    dir[newDir] = 1;
+                }
+                else if (newDir == 1)
+                {
+                    if (map[x - 2, y] == 0)
+                    {
+                        generateMaze(x - 2, y);
+                    }
+                    dir[newDir] = 1;
+                }
+                else if (newDir == 2)
+                {
+                    if (map[x, y + 2] == 0)
+                    {
+                        generateMaze(x, y + 2);
+                    }
+                    dir[newDir] = 1;
+                }
+                else if (newDir == 3)
+                {
+                    if (map[x, y - 2] == 0)
+                    {
+                        generateMaze(x, y - 2);
+                    }
+                    dir[newDir] = 1;
+                }
+            }
+
+        }
+
+        //MÉTHODE RANDOMIZE()
+        /** Cette méthode génère un chiffre entier aléatoire entre a et b.
+          * @return un nombre aléatoire compris dans l'intervalle de a et de b.
+         */
+        private int randomize(int a, int b)
+        {
+            //0 = UP, 1 = DOWN, 2 = RIGHT, 3 = LEFT
+            Random rnd = new Random();
+            int rez = rnd.Next(a, b);
+            return rez;
+
+        }
+        public void toString()
+        {
+  
+            foreach (var item in map)
+            {
+                Console.WriteLine(item.ToString());
+            }
+
+        }
+
+
     }
-}
+    }
+
