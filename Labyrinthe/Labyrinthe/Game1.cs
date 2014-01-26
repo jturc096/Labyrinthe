@@ -32,6 +32,8 @@ namespace Labyrinthe
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
+
+            Components.Add(new GamerServicesComponent(this));
         }
 
         /// <summary>
@@ -59,7 +61,7 @@ namespace Labyrinthe
             mat = new Matrice(10, 10);
             map = mat.getMap();
             pos = new int[1,2];
-            pos[0, 0] = 2;
+            pos[0, 0] = 1;
             pos[0, 1] = 2;
             tiles.Add(Content.Load<Texture2D>("blackTile"));
             tiles.Add(Content.Load<Texture2D>("greytile"));
@@ -98,12 +100,13 @@ namespace Labyrinthe
                     pos[0, 0]++;
                     if ((pos[0, 0] == map.GetLength(0)-2) && (pos[0, 1] == map.GetLength(1) - 3)) {
                         end = true;
+                        GameWon();
                     }
                 }
             }
             else if ((newState.IsKeyDown(Keys.Up)) && (!oldState.IsKeyDown(Keys.Up)))
             {
-                if (map[(pos[0, 0] - 1), pos[0, 1]] == 1)
+                if (map[(pos[0, 0] - 1), pos[0, 1]] == 1 && (pos[0,0] != 1))
                 {
                     pos[0, 0]--;
                 }
@@ -128,6 +131,20 @@ namespace Labyrinthe
             // TODO: Add your update logic here
 
             base.Update(gameTime);
+        }
+
+        private void GameWon() {
+            List<string> MBOPTIONS = new List<string>();
+            MBOPTIONS.Add("OK");
+            string msg = "Le niveau a été réussi!.\nCliquer OK pour continuer...";
+            Guide.BeginShowMessageBox(
+                    "Niveau Réussi", msg, MBOPTIONS, 0,
+                    MessageBoxIcon.Alert, null, null);
+        }
+
+        protected void GetMBResult(IAsyncResult r)
+        {
+            int? b = Guide.EndShowMessageBox(r);
         }
 
         /// <summary>
