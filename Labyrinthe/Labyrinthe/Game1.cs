@@ -18,9 +18,11 @@ namespace Labyrinthe
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
+        KeyboardState oldState;
         
         List<Texture2D> tiles = new List<Texture2D>();
         Matrice mat;
+        int[,] pos;
         int[,] map;
         int tilewidth = 10;
         int tileheight = 10;
@@ -55,9 +57,13 @@ namespace Labyrinthe
             spriteBatch = new SpriteBatch(GraphicsDevice);
             mat = new Matrice((((graphics.PreferredBackBufferHeight / 2) - 3) / tileheight), (((graphics.PreferredBackBufferWidth / 2) - 3) / tilewidth));
             map = mat.getMap();
+            pos = new int[1,2];
+            pos[0, 0] = 2;
+            pos[0, 1] = 2;
             tiles.Add(Content.Load<Texture2D>("blackTile"));
             tiles.Add(Content.Load<Texture2D>("greytile"));
             tiles.Add(Content.Load<Texture2D>("whiteTile"));
+            tiles.Add(Content.Load<Texture2D>("blueTile"));
 
             // TODO: use this.Content to load your game content here
         }
@@ -84,6 +90,35 @@ namespace Labyrinthe
                 this.Exit();
             else if(newState.IsKeyDown(Keys.Escape))
                 this.Exit();
+            else if ((newState.IsKeyDown(Keys.Down)) && (!oldState.IsKeyDown(Keys.Down)))
+            {
+                if (map[(pos[0, 0] + 1), pos[0, 1]] == 1) {
+                    pos[0, 0]++;
+                }
+            }
+            else if ((newState.IsKeyDown(Keys.Up)) && (!oldState.IsKeyDown(Keys.Up)))
+            {
+                if (map[(pos[0, 0] - 1), pos[0, 1]] == 1)
+                {
+                    pos[0, 0]--;
+                }
+            }
+            else if ((newState.IsKeyDown(Keys.Right)) && (!oldState.IsKeyDown(Keys.Right)))
+            {
+                if (map[pos[0, 0], (pos[0, 1] + 1)] == 1)
+                {
+                    pos[0, 1]++;
+                }
+            }
+            else if ((newState.IsKeyDown(Keys.Left)) && (!oldState.IsKeyDown(Keys.Left)))
+            {
+                if (map[pos[0, 0], (pos[0, 1] - 1)] == 1)
+                {
+                    pos[0, 1]--;
+                }
+            }
+            // Update saved state.
+            oldState = newState;
 
             // TODO: Add your update logic here
 
@@ -120,7 +155,12 @@ namespace Labyrinthe
                     
                 }
             }
-
+            spriteBatch.Draw(tiles[3],
+                    new Rectangle(
+                            (pos[0,1] - 1)*tilewidth,
+                            (pos[0,0] - 1)*tileheight,
+                            tilewidth,
+                            tileheight), Color.AliceBlue);
             base.Draw(gameTime);
             spriteBatch.End();
 
