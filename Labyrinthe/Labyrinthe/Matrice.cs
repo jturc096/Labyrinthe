@@ -14,6 +14,8 @@ namespace Labyrinthe
         int dimX;
         int dimY;
         private int[,] map;
+        Random rnd;
+        
 
         public Matrice(int x, int y)
         {
@@ -21,8 +23,8 @@ namespace Labyrinthe
             dimY = y;
             dimTotX = x * 2 + 3;
             dimTotY = y * 2 + 3;
-            map = new int[dimTotY, dimTotX];
-
+            map = new int[dimTotX, dimTotY];
+            rnd = new Random();
             init();
         }
 
@@ -33,11 +35,11 @@ namespace Labyrinthe
 
         public void init()
         {
-            for (int row = 0; row < dimTotY; row++)
+            for (int row = 0; row < dimTotX; row++)
             {
-                for (int column = 0; column < dimTotX; column++)
+                for (int column = 0; column < dimTotY; column++)
                 {
-                    if (row < 1 || column < 1 || row >= dimTotY - 1 || column >= dimTotX - 1)
+                    if (row <= 1 || column <= 1 || row >= dimTotX - 2 || column >= dimTotY - 2)
                     {
                         map[row, column] = -1;
                     }
@@ -58,8 +60,8 @@ namespace Labyrinthe
             map[0, 2] = 1;
 
             //Finish:
-            map[dimTotY - 2, dimTotX - 3] = 1;
-            map[dimTotY - 1, dimTotX - 3] = 1;
+            map[dimTotX - 2, dimTotY - 3] = 1;
+            map[dimTotX - 1, dimTotY - 3] = 1;
         }
 
         //Verify all 4 directions and return TRUE if none of them are available
@@ -83,7 +85,9 @@ namespace Labyrinthe
             dir[3] = map[x, y - 2];
 
             //Check if all directions are unavailable
-            if (noOther(dir)) return;
+            if (noOther(dir)) {
+                return;
+            } 
 
             //Explore all possible directions
             while (!noOther(dir))
@@ -98,6 +102,7 @@ namespace Labyrinthe
                 {
                     if (map[x + 2, y] == 0)
                     {
+                        map[x + 1, y] = 1;
                         generateMaze(x + 2, y);
                     }
                     dir[newDir] = 1;
@@ -106,6 +111,7 @@ namespace Labyrinthe
                 {
                     if (map[x - 2, y] == 0)
                     {
+                        map[x - 1, y] = 1;
                         generateMaze(x - 2, y);
                     }
                     dir[newDir] = 1;
@@ -114,6 +120,7 @@ namespace Labyrinthe
                 {
                     if (map[x, y + 2] == 0)
                     {
+                        map[x, y + 1] = 1;
                         generateMaze(x, y + 2);
                     }
                     dir[newDir] = 1;
@@ -122,11 +129,13 @@ namespace Labyrinthe
                 {
                     if (map[x, y - 2] == 0)
                     {
+                        map[x, y - 1] = 1;
                         generateMaze(x, y - 2);
                     }
                     dir[newDir] = 1;
                 }
             }
+
 
         }
 
@@ -137,8 +146,8 @@ namespace Labyrinthe
         private int randomize(int a, int b)
         {
             //0 = UP, 1 = DOWN, 2 = RIGHT, 3 = LEFT
-            Random rnd = new Random();
-            int rez = rnd.Next(a, b);
+            int rez = rnd.Next(0,4);
+
             return rez;
 
         }

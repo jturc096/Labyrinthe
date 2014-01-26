@@ -53,7 +53,7 @@ namespace Labyrinthe
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
-            mat = new Matrice((graphics.PreferredBackBufferHeight / tileheight), (graphics.PreferredBackBufferWidth / tilewidth));
+            mat = new Matrice((((graphics.PreferredBackBufferHeight / 2) - 3) / tileheight), (((graphics.PreferredBackBufferWidth / 2) - 3) / tilewidth));
             map = mat.getMap();
             tiles.Add(Content.Load<Texture2D>("blackTile"));
             tiles.Add(Content.Load<Texture2D>("greytile"));
@@ -96,18 +96,28 @@ namespace Labyrinthe
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
+            Color colori;
             GraphicsDevice.Clear(Color.CornflowerBlue);
             spriteBatch.Begin();
-            for (int y = 0; y < map.GetLength(0); y++)
+            for (int y = 1; y < (map.GetLength(0)-1); y++)
             {
-                for (int x = 0; x < map.GetLength(1); x++)
+                for (int x = 1; x < (map.GetLength(1)-1); x++)
                 {
-                    spriteBatch.Draw(tiles[(map[y,x] + 1)],
+                    if ((map[y, x] + 1) == 0)
+                        colori = Color.Black;
+                    else if ((map[y, x] + 1) == 1)
+                        colori = Color.DarkSlateGray;
+                    else
+                        colori = Color.White;
+
+
+                    spriteBatch.Draw(tiles[(map[y, x] + 1)],
                     new Rectangle(
-                            x*tilewidth,
-                            y*tileheight,
+                            (x -1) * tilewidth,
+                            (y-1) * tileheight,
                             tilewidth,
-                            tileheight),Color.White);
+                            tileheight), colori);
+                    
                 }
             }
 
