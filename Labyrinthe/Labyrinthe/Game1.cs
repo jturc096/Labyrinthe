@@ -19,13 +19,13 @@ namespace Labyrinthe
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         KeyboardState oldState;
-        
         List<Texture2D> tiles = new List<Texture2D>();
         Matrice mat;
         int[,] pos;
         int[,] map;
         int tilewidth = 10;
         int tileheight = 10;
+        bool end = false;
         
 
         public Game1()
@@ -55,7 +55,8 @@ namespace Labyrinthe
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
-            mat = new Matrice((((graphics.PreferredBackBufferHeight / 2) - 3) / tileheight), (((graphics.PreferredBackBufferWidth / 2) - 3) / tilewidth));
+            //mat = new Matrice((((graphics.PreferredBackBufferHeight / 3) - 3) / tileheight), (((graphics.PreferredBackBufferWidth / 3) - 3) / tilewidth));
+            mat = new Matrice(10, 10);
             map = mat.getMap();
             pos = new int[1,2];
             pos[0, 0] = 2;
@@ -64,7 +65,6 @@ namespace Labyrinthe
             tiles.Add(Content.Load<Texture2D>("greytile"));
             tiles.Add(Content.Load<Texture2D>("whiteTile"));
             tiles.Add(Content.Load<Texture2D>("blueTile"));
-
             // TODO: use this.Content to load your game content here
         }
 
@@ -84,6 +84,7 @@ namespace Labyrinthe
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
+            if(!end){
             KeyboardState newState = Keyboard.GetState();
             // Allows the game to exit
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
@@ -92,8 +93,12 @@ namespace Labyrinthe
                 this.Exit();
             else if ((newState.IsKeyDown(Keys.Down)) && (!oldState.IsKeyDown(Keys.Down)))
             {
+
                 if (map[(pos[0, 0] + 1), pos[0, 1]] == 1) {
                     pos[0, 0]++;
+                    if ((pos[0, 0] == map.GetLength(0)-2) && (pos[0, 1] == map.GetLength(1) - 3)) {
+                        end = true;
+                    }
                 }
             }
             else if ((newState.IsKeyDown(Keys.Up)) && (!oldState.IsKeyDown(Keys.Up)))
@@ -119,7 +124,7 @@ namespace Labyrinthe
             }
             // Update saved state.
             oldState = newState;
-
+            }
             // TODO: Add your update logic here
 
             base.Update(gameTime);
@@ -131,42 +136,48 @@ namespace Labyrinthe
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            Color colori;
-            GraphicsDevice.Clear(Color.CornflowerBlue);
-            spriteBatch.Begin();
-            for (int y = 1; y < (map.GetLength(0)-1); y++)
-            {
-                for (int x = 1; x < (map.GetLength(1)-1); x++)
+  
+                Color colori;
+                GraphicsDevice.Clear(Color.White);
+                spriteBatch.Begin();
+                for (int y = 1; y < (map.GetLength(0) - 1); y++)
                 {
-                    if ((map[y, x] + 1) == 0)
-                        colori = Color.Black;
-                    else if ((map[y, x] + 1) == 1)
-                        colori = Color.DarkSlateGray;
-                    else
-                        colori = Color.White;
-
-
-                    spriteBatch.Draw(tiles[(map[y, x] + 1)],
-                    new Rectangle(
-                            (x -1) * tilewidth,
-                            (y-1) * tileheight,
-                            tilewidth,
-                            tileheight), colori);
-                    
+                    for (int x = 1; x < (map.GetLength(1) - 1); x++)
+                    {
+                        if ((map[y, x] + 1) == 0)
+                        {
+                            colori = Color.Black;
+                        }
+                        else if ((map[y, x] + 1) == 1)
+                        {
+                            colori = Color.DarkSlateGray;
+                        }
+                        else
+                        {
+                            colori = Color.White;
+                        }
+                        spriteBatch.Draw(tiles[(map[y, x] + 1)],
+                        new Rectangle(
+                                (x + graphics.PreferredBackBufferWidth/28) * tilewidth,
+                                (y + graphics.PreferredBackBufferHeight/40) * tileheight,
+                                tilewidth,
+                                tileheight), colori);
+                       
+                    }
                 }
-            }
-            spriteBatch.Draw(tiles[3],
-                    new Rectangle(
-                            (pos[0,1] - 1)*tilewidth,
-                            (pos[0,0] - 1)*tileheight,
-                            tilewidth,
-                            tileheight), Color.AliceBlue);
-            base.Draw(gameTime);
-            spriteBatch.End();
+                spriteBatch.Draw(tiles[3],
+                        new Rectangle(
+                                (pos[0, 1] + graphics.PreferredBackBufferWidth /28) * tilewidth,
+                                (pos[0, 0] + graphics.PreferredBackBufferHeight/40) * tileheight,
+                                tilewidth,
+                                tileheight), Color.AliceBlue);
+                base.Draw(gameTime);
+                spriteBatch.End();
 
-            // TODO: Add your drawing code here
+                // TODO: Add your drawing code here
 
-            base.Draw(gameTime);
+                base.Draw(gameTime);
+            
         }
     }
 }
