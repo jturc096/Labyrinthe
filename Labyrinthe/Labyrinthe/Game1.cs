@@ -21,6 +21,15 @@ namespace Labyrinthe
         KeyboardState oldState;
         List<Texture2D> tiles = new List<Texture2D>();
         Matrice mat;
+        // Create an instance of Texture2D that will
+        // contain the background texture.
+        Texture2D background;
+
+        // Create a Rectangle that will define
+        // the limits for the main game screen.
+        Rectangle mainFrame;
+
+
         int[,] pos;
         int[,] map;
         int tilewidth = 10;
@@ -67,6 +76,14 @@ namespace Labyrinthe
             tiles.Add(Content.Load<Texture2D>("greytile"));
             tiles.Add(Content.Load<Texture2D>("whiteTile"));
             tiles.Add(Content.Load<Texture2D>("blueTile"));
+
+            // Load the background content.
+            background = Content.Load<Texture2D>("Textures\\MARTIN");
+
+            // Set the rectangle parameters.
+            mainFrame = new Rectangle(0, 0, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height);
+
+
             // TODO: use this.Content to load your game content here
         }
 
@@ -154,8 +171,23 @@ namespace Labyrinthe
         protected override void Draw(GameTime gameTime)
         {
   
+
+
                 Color colori;
                 GraphicsDevice.Clear(Color.White);
+
+                // Draw the background.
+
+                // Start building the sprite.
+                spriteBatch.Begin();
+
+                // Draw the background.
+                spriteBatch.Draw(background, mainFrame, Color.White);
+
+                // End building the sprite.
+                spriteBatch.End();
+
+
                 spriteBatch.Begin();
                 for (int y = 1; y < (map.GetLength(0) - 1); y++)
                 {
