@@ -32,9 +32,11 @@ namespace Labyrinthe
 
         int[,] pos;
         int[,] map;
+        int dimHeightMat = 10;
+        int dimWidthMat = 10;
         int tilewidth = 10;
         int tileheight = 10;
-        bool end = false;
+        bool end;
         
 
         public Game1()
@@ -67,7 +69,7 @@ namespace Labyrinthe
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
             //mat = new Matrice((((graphics.PreferredBackBufferHeight / 3) - 3) / tileheight), (((graphics.PreferredBackBufferWidth / 3) - 3) / tilewidth));
-            mat = new Matrice(10, 10);
+            mat = new Matrice(dimHeightMat, dimWidthMat);
             map = mat.getMap();
             pos = new int[1,2];
             pos[0, 0] = 1;
@@ -83,6 +85,8 @@ namespace Labyrinthe
             // Set the rectangle parameters.
             mainFrame = new Rectangle(0, 0, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height);
 
+            //Sets end boolean to false for the beginning of the game
+            end = false;
 
             // TODO: use this.Content to load your game content here
         }
@@ -156,12 +160,18 @@ namespace Labyrinthe
             string msg = "Le niveau a été réussi!.\nCliquer OK pour continuer...";
             Guide.BeginShowMessageBox(
                     "Niveau Réussi", msg, MBOPTIONS, 0,
-                    MessageBoxIcon.Alert, null, null);
+                    MessageBoxIcon.Alert, GetMBResult, null);
         }
 
         protected void GetMBResult(IAsyncResult r)
         {
             int? b = Guide.EndShowMessageBox(r);
+            if (r.IsCompleted) {
+                dimWidthMat += 5;
+                Initialize();
+            }
+            
+            
         }
 
         /// <summary>
@@ -186,7 +196,9 @@ namespace Labyrinthe
 
                 // End building the sprite.
                 spriteBatch.End();
-
+                
+            
+                int mapWidth = (mat.getDim()[0, 0]);
 
                 spriteBatch.Begin();
                 for (int y = 1; y < (map.GetLength(0) - 1); y++)
@@ -207,7 +219,7 @@ namespace Labyrinthe
                         }
                         spriteBatch.Draw(tiles[(map[y, x] + 1)],
                         new Rectangle(
-                                (x + graphics.PreferredBackBufferWidth/28) * tilewidth,
+                                (x + ((graphics.PreferredBackBufferWidth / 2) - (mapWidth * tilewidth)/2) / tilewidth) * tilewidth,
                                 (y + graphics.PreferredBackBufferHeight/40) * tileheight,
                                 tilewidth,
                                 tileheight), colori);
@@ -216,7 +228,7 @@ namespace Labyrinthe
                 }
                 spriteBatch.Draw(tiles[3],
                         new Rectangle(
-                                (pos[0, 1] + graphics.PreferredBackBufferWidth /28) * tilewidth,
+                                (pos[0, 1] + ((graphics.PreferredBackBufferWidth / 2) - (mapWidth * tilewidth) / 2) / tilewidth) * tilewidth,
                                 (pos[0, 0] + graphics.PreferredBackBufferHeight/40) * tileheight,
                                 tilewidth,
                                 tileheight), Color.AliceBlue);

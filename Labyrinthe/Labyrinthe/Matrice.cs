@@ -151,6 +151,13 @@ namespace Labyrinthe
             return rez;
 
         }
+
+        public int[,] getDim() { 
+            int[,] ret = new int[1,2];
+            ret[0, 0] = dimTotX;
+            ret[0, 1] = dimTotY;
+            return ret;
+        }
         public void toString()
         {
   
