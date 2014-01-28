@@ -22,6 +22,7 @@ namespace Labyrinthe
         List<Texture2D> tiles = new List<Texture2D>();
         Matrice mat;
         int mapWidth;
+        int mapHeight;
         // Create an instance of Texture2D that will
         // contain the background texture.
         Texture2D background;
@@ -76,10 +77,12 @@ namespace Labyrinthe
             pos[0, 0] = 1;
             pos[0, 1] = 2;
             mapWidth = mat.getDim()[0, 1];
+            mapHeight = mat.getDim()[0, 0];
             tiles.Add(Content.Load<Texture2D>("blackTile"));
             tiles.Add(Content.Load<Texture2D>("greytile"));
             tiles.Add(Content.Load<Texture2D>("whiteTile"));
-            tiles.Add(Content.Load<Texture2D>("blueTile"));
+            //tiles.Add(Content.Load<Texture2D>("blueTile"));
+            tiles.Add(Content.Load<Texture2D>("stickmen"));
 
             // Load the background content.
             background = Content.Load<Texture2D>("Textures\\MARTIN");
@@ -222,7 +225,7 @@ namespace Labyrinthe
                         spriteBatch.Draw(tiles[(map[y, x] + 1)],
                         new Rectangle(
                                 (x + ((graphics.PreferredBackBufferWidth / 2) - (mapWidth * tilewidth)/2) / tilewidth) * tilewidth,
-                                (y + graphics.PreferredBackBufferHeight/40) * tileheight,
+                                (y + ((graphics.PreferredBackBufferHeight / 2) - (mapHeight * tileheight) / 2) / tileheight) * tileheight,
                                 tilewidth,
                                 tileheight), colori);
                        
@@ -231,7 +234,7 @@ namespace Labyrinthe
                 spriteBatch.Draw(tiles[3],
                         new Rectangle(
                                 (pos[0, 1] + ((graphics.PreferredBackBufferWidth / 2) - (mapWidth * tilewidth) / 2) / tilewidth) * tilewidth,
-                                (pos[0, 0] + graphics.PreferredBackBufferHeight/40) * tileheight,
+                                (pos[0, 0] + ((graphics.PreferredBackBufferHeight / 2) - (mapHeight * tileheight) / 2) / tileheight) * tileheight,
                                 tilewidth,
                                 tileheight), Color.AliceBlue);
                 base.Draw(gameTime);
