@@ -21,6 +21,7 @@ namespace Labyrinthe
         KeyboardState oldState;
         List<Texture2D> tiles = new List<Texture2D>();
         Matrice mat;
+        int mapWidth;
         // Create an instance of Texture2D that will
         // contain the background texture.
         Texture2D background;
@@ -74,6 +75,7 @@ namespace Labyrinthe
             pos = new int[1,2];
             pos[0, 0] = 1;
             pos[0, 1] = 2;
+            mapWidth = mat.getDim()[0, 1];
             tiles.Add(Content.Load<Texture2D>("blackTile"));
             tiles.Add(Content.Load<Texture2D>("greytile"));
             tiles.Add(Content.Load<Texture2D>("whiteTile"));
@@ -198,7 +200,7 @@ namespace Labyrinthe
                 spriteBatch.End();
                 
             
-                int mapWidth = (mat.getDim()[0, 0]);
+                
 
                 spriteBatch.Begin();
                 for (int y = 1; y < (map.GetLength(0) - 1); y++)
